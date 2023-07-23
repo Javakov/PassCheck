@@ -1,6 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MeetupSync" parent="Theme.Material3.DayNight.NoActionBar">
-
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#152995</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">#152995</item>
+        <item name="colorSecondaryVariant">#152995</item>
+        <item name="colorOnSecondary">#152995</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">#152995</item>
     </style>
 </resources>

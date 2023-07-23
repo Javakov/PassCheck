@@ -5,8 +5,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +27,9 @@ public class PinCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pin_code);
 
+        // Открытие клавиатуры сразу при открытии приложения
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         pinCodeEditText = findViewById(R.id.pinCodeEditText);
         submitButton = findViewById(R.id.submitButton);
 
@@ -31,10 +37,13 @@ public class PinCodeActivity extends AppCompatActivity {
         isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         if (isFirstRun) {
-            submitButton.setText("СОХРАНИТЬ ПАРОЛЬ");
+            submitButton.setText("СОХРАНИТЬ");
         } else {
             submitButton.setText("ВОЙТИ");
         }
+
+        // Установка курсора в поле для ввода пароля
+        pinCodeEditText.requestFocus();
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,10 +77,10 @@ public class PinCodeActivity extends AppCompatActivity {
             }
         });
 
-        pinCodeEditText.setOnKeyListener(new View.OnKeyListener() {
+        pinCodeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String pinCode = pinCodeEditText.getText().toString();
 
                     if (isFirstRun) {

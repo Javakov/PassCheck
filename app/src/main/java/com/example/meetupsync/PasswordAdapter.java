@@ -1,6 +1,7 @@
 package com.example.meetupsync;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.Passwo
         Password password = passwordList.get(position);
 
         holder.serviceTextView.setText(password.getService());
+        holder.serviceTextView.setTextSize(20); // Установка размера шрифта
+        holder.serviceTextView.setTypeface(holder.serviceTextView.getTypeface(), Typeface.BOLD);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
