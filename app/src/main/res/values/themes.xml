@@ -10,7 +10,7 @@
         <item name="colorOnSecondary">#2491F6</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">#2490F5</item>
-        <item name="android:navigationBarColor">#FBFDFF</item>
+        <item name="android:navigationBarColor">#248FF4</item>
         <item name="android:windowLightNavigationBar">true</item>
 
     </style>
