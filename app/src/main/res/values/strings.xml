@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Password Check</string>
+    <string name="app_name">PassMaster</string>
     <string name="invalid_pin_message">Неверный пин код</string>
     <string name="write_message">Введите название сервиса и пароль</string>
 </resources>

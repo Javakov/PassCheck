@@ -16,6 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_PASSWORDS = "passwords";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_SERVICE = "service";
+    private static final String COLUMN_LOGIN = "login";
     private static final String COLUMN_PASSWORD = "password";
 
     public DatabaseHelper(Context context) {
@@ -28,6 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_SERVICE + " TEXT," +
+                COLUMN_LOGIN + " TEXT," +
                 COLUMN_PASSWORD + " TEXT" +
                 ")";
         db.execSQL(CREATE_PASSWORDS_TABLE);
@@ -44,6 +46,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_SERVICE, password.getService());
+        values.put(COLUMN_LOGIN, password.getLogin());
         values.put(COLUMN_PASSWORD, password.getPassword());
 
         db.insert(TABLE_PASSWORDS, null, values);
@@ -62,20 +65,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (!cursor.isAfterLast()) {
                 int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
                 String service = cursor.getString(cursor.getColumnIndex(COLUMN_SERVICE));
+                String login = cursor.getString(cursor.getColumnIndex(COLUMN_LOGIN));
                 String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
 
-                Password passwordObj = new Password(id, service, password);
+                Password passwordObj = new Password(id, service, login, password);
                 passwordList.add(passwordObj);
 
                 cursor.moveToNext();
             }
         }
-
-
         cursor.close();
         db.close();
-
         return passwordList;
     }
+
+    public List<Password> getPasswordsByService(String searchText) {
+        List<Password> passwordList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS + " WHERE " + COLUMN_SERVICE + " LIKE ?";
+
+        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchText });
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                String service = cursor.getString(cursor.getColumnIndex(COLUMN_SERVICE));
+                String login = cursor.getString(cursor.getColumnIndex(COLUMN_LOGIN));
+                String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
+
+                Password passwordItem = new Password(id, service, login, password);
+                passwordList.add(passwordItem);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return passwordList;
+    }
+
+
 }
 

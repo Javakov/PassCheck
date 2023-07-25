@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.PasswordViewHolder> {
@@ -18,6 +20,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.Passwo
 
     public PasswordAdapter(List<Password> passwordList) {
         this.passwordList = passwordList;
+        Collections.reverse(this.passwordList);
     }
 
     @NonNull
@@ -41,6 +44,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.Passwo
                 Password password = passwordList.get(position);
                 Intent intent = new Intent(v.getContext(), PasswordDetailsActivity.class);
                 intent.putExtra("service", password.getService());
+                intent.putExtra("login", password.getLogin());
                 intent.putExtra("password", password.getPassword());
                 v.getContext().startActivity(intent);
             }

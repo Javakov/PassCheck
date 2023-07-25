@@ -36,6 +36,7 @@ public class PinCodeActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
+
         if (isFirstRun) {
             submitButton.setText("СОХРАНИТЬ");
         } else {
@@ -72,6 +73,7 @@ public class PinCodeActivity extends AppCompatActivity {
                     } else {
                         // Пин-код неверный, выполнение соответствующих действий
                         Toast.makeText(PinCodeActivity.this, R.string.invalid_pin_message, Toast.LENGTH_SHORT).show();
+                        pinCodeEditText.setText(null);
                     }
                 }
             }
@@ -80,7 +82,7 @@ public class PinCodeActivity extends AppCompatActivity {
         pinCodeEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                     String pinCode = pinCodeEditText.getText().toString();
 
                     if (isFirstRun) {
@@ -107,6 +109,7 @@ public class PinCodeActivity extends AppCompatActivity {
                         } else {
                             // Пин-код неверный, выполнение соответствующих действий
                             Toast.makeText(PinCodeActivity.this, R.string.invalid_pin_message, Toast.LENGTH_SHORT).show();
+                            pinCodeEditText.setText(null);
                             return true;
                         }
                     }
@@ -114,5 +117,7 @@ public class PinCodeActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
+
 }
