@@ -63,11 +63,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Password password = new Password(0, "сервис", "логин", "пароль");
-                password.setId(Integer.parseInt(cursor.getString(0)));
+                Password password = new Password("сервис", "логин", "пароль");
                 password.setService(cursor.getString(1));
                 password.setLogin(cursor.getString(2));
-                password.setPassword(cursor.getString(2));
+                password.setPassword(cursor.getString(3));
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }
@@ -87,11 +86,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Password password = new Password(0, "сервис", "логин", "пароль");
-                password.setId(Integer.parseInt(cursor.getString(0)));
+                Password password = new Password("сервис", "логин", "пароль");
                 password.setService(cursor.getString(1));
                 password.setLogin(cursor.getString(2));
-                password.setPassword(cursor.getString(2));
+                password.setPassword(cursor.getString(3));
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }

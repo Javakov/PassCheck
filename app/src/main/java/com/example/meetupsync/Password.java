@@ -7,8 +7,7 @@ public class Password {
     private String login;
     private String password;
 
-    public Password(int id, String service, String login, String password) {
-        this.id = id;
+    public Password(String service, String login, String password) {
         this.service = service;
         this.login = login;
         this.password = password;

@@ -65,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
                     showPassword(password, new ArrayList<>());
                 }
             }
-
         });
-
     }
 
     @Override
@@ -110,17 +108,23 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            String service = data.getStringExtra("service");
-            String login = data.getStringExtra("login");
-            String password = data.getStringExtra("password");
+            if (data != null) {
+                String service = data.getStringExtra("service");
+                String login = data.getStringExtra("login");
+                String password = data.getStringExtra("password");
 
-            if (service != null && login != null && password != null) {
-                Password newPassword = new Password(0, service, login, password);
+                // Создание объекта Password с полученными данными
+                Password newPassword = new Password(service, login, password);
+
+                // Добавление нового пароля в список
                 dbhelp.addPassword(newPassword);
-                showPasswords(); // Показываем обновленные карточки
+
+                // Обновление отображения списка паролей
+                showPasswords();
             }
         }
     }
+
 
     // метод для отображения всех карточек на экране
     private void showPasswords() {
@@ -140,11 +144,35 @@ public class MainActivity extends AppCompatActivity {
 
         TextView idTextView = cardView.findViewById(R.id.idTextView);
         TextView serviceTextView = cardView.findViewById(R.id.serviceTextView);
+        TextView loginTextView = cardView.findViewById(R.id.loginTextView);
+        TextView passwordTextView = cardView.findViewById(R.id.passwordTextView);
 
         // Устанавливаем значение поля idTextView
         idTextView.setText(String.valueOf(password.getId()));
 
         serviceTextView.setText(password.getService());
+        loginTextView.setText(password.getLogin());
+        passwordTextView.setText(password.getPassword());
+
+
+        // Добавляем обработчик нажатия на карточку
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, PasswordDetailsActivity.class);
+                intent.putExtra("service", password.getService());
+                intent.putExtra("login", password.getLogin());
+                intent.putExtra("password", password.getPassword());
+                startActivity(intent);
+            }
+        });
+
+        passwordsLayout.addView(cardView);
+    }
+}
+
+
+
 
 //        // устанавливаем обработчик нажатия на кнопку "Удалить"
 //        deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +188,3 @@ public class MainActivity extends AppCompatActivity {
 //                cardLayout.setVisibility(View.GONE);
 //            }
 //        });
-        passwordsLayout.addView(cardView);
-    }
-}

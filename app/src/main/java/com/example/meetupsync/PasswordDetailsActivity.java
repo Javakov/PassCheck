@@ -40,7 +40,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         String login = getIntent().getStringExtra("login");
         String password = getIntent().getStringExtra("password");
 
-        serviceTextView.setText(service);
+        serviceTextView.setText("https://" + service + ".com");
         loginTextView.setText(login);
         passwordTextView.setText(password);
 
