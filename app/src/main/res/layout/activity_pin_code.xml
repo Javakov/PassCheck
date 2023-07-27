@@ -38,7 +38,7 @@ tools:context=".PinCodeActivity">
     android:layout_marginTop="0dp"
     android:text="ВОЙТИ"
     android:background="@drawable/button_border"
-    android:fontFamily="sans-serif-thin"
+    android:fontFamily="sans-serif"
 
     android:textColor="@color/white"/>
 
