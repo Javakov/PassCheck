@@ -28,12 +28,20 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/passwordsRecyclerView"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="visible" />
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/passwordsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@drawable/divider"
+            android:orientation="vertical"
+            android:showDividers="middle" />
+
+    </ScrollView>
 
     <View
         android:layout_width="match_parent"

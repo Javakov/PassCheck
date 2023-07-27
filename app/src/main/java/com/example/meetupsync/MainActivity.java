@@ -5,26 +5,26 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView passwordsRecyclerView;
+    private LinearLayout passwordsLayout;
     private Button addPasswordButton;
-    private PasswordAdapter passwordAdapter;
-    private List<Password> passwordList;
-    private DatabaseHelper databaseHelper;
     private Button searchButton;
     private EditText searchEditText;
+    private DatabaseHelper dbhelp;
 
 
     @Override
@@ -32,23 +32,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        passwordsRecyclerView = findViewById(R.id.passwordsRecyclerView);
+        passwordsLayout = findViewById(R.id.passwordsLayout);
         addPasswordButton = findViewById(R.id.addPasswordButton);
         searchButton = findViewById(R.id.searchButton);
         searchEditText = findViewById(R.id.searchEditText);
 
-        databaseHelper = new DatabaseHelper(this);
-        passwordList = databaseHelper.getAllPasswords();
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        passwordsRecyclerView.setLayoutManager(layoutManager);
-        passwordAdapter = new PasswordAdapter(passwordList);
-        passwordsRecyclerView.setAdapter(passwordAdapter);
+        dbhelp = new DatabaseHelper(this);
+        showPasswords();
 
         addPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddPasswordActivity.class);
+                showPasswords();
                 startActivityForResult(intent, 1);
             }
         });
@@ -59,21 +55,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String searchText = searchEditText.getText().toString();
 
-                if (searchText.isEmpty()) {
-                    // Если поле поиска пустое, показать все карточки
-                    passwordList = databaseHelper.getAllPasswords();
-                } else {
-                    // Иначе выполнить поиск карточек по тексту вопроса
-                    passwordList = databaseHelper.getPasswordsByService("%" + searchText + "%");
+                // поиск карточек по тексту вопроса
+                List<Password> passwordList = dbhelp.getPasswordsByService(searchText);
+                Collections.reverse(passwordList);
+
+                // вывод результатов поиска
+                passwordsLayout.removeAllViews();
+                for (Password password : passwordList) {
+                    showPassword(password, new ArrayList<>());
                 }
-
-                passwordAdapter = new PasswordAdapter(passwordList);
-                passwordsRecyclerView.setAdapter(passwordAdapter);
-
-                // Показываем поле поиска и кнопку "Найти"
-                searchEditText.setVisibility(View.VISIBLE);
-                searchButton.setVisibility(View.VISIBLE);
             }
+
         });
 
     }
@@ -87,12 +79,7 @@ public class MainActivity extends AppCompatActivity {
             searchEditText.setText("");
 
             // Показываем все карточки
-            passwordList = databaseHelper.getAllPasswords();
-
-            passwordAdapter = new PasswordAdapter(passwordList);
-            passwordsRecyclerView.setAdapter(passwordAdapter);
-
-            passwordList = databaseHelper.getAllPasswords();
+            showPasswords();
         }
     }
 
@@ -123,23 +110,56 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            int id = 0;
             String service = data.getStringExtra("service");
             String login = data.getStringExtra("login");
             String password = data.getStringExtra("password");
 
             if (service != null && login != null && password != null) {
-                Password newPassword = new Password(id, service, login, password);
-                passwordList.add(0, newPassword);
-                passwordAdapter.notifyItemInserted(0);
-                passwordsRecyclerView.scrollToPosition(0);
-
-                //passwordsRecyclerView.scrollToPosition(0); // Прокручиваем к новому элементу
-
-                databaseHelper.addPassword(newPassword);
+                Password newPassword = new Password(0, service, login, password);
+                dbhelp.addPassword(newPassword);
+                showPasswords(); // Показываем обновленные карточки
             }
-
-
         }
+    }
+
+    // метод для отображения всех карточек на экране
+    private void showPasswords() {
+        List<Password> PassList = dbhelp.getAllPasswords();
+
+        passwordsLayout.removeAllViews();
+        for (int i = PassList.size() - 1; i >= 0; i--) {
+            Password password = PassList.get(i);
+            showPassword(password, new ArrayList<>());
+        }
+    }
+
+    // метод для отображения одной карточки на экране
+    private void showPassword(Password password, List<View> selectedCards) {
+        LayoutInflater inflater = getLayoutInflater();
+        View cardView = inflater.inflate(R.layout.list_item_password, null);
+
+        TextView idTextView = cardView.findViewById(R.id.idTextView);
+        TextView serviceTextView = cardView.findViewById(R.id.serviceTextView);
+
+        // Устанавливаем значение поля idTextView
+        idTextView.setText(String.valueOf(password.getId()));
+
+        serviceTextView.setText(password.getService());
+
+//        // устанавливаем обработчик нажатия на кнопку "Удалить"
+//        deleteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Получаем ID карточки, которую нужно удалить
+//                LinearLayout cardLayout = (LinearLayout) buttonLayout.getParent();
+//                TextView idTextView = cardLayout.findViewById(R.id.idTextView);
+//                int cardId = Integer.parseInt(idTextView.getText().toString());
+//
+//                // Удаляем карточку из базы данных и из макета
+//                dbHelper.deleteCardById(cardId);
+//                cardLayout.setVisibility(View.GONE);
+//            }
+//        });
+        passwordsLayout.addView(cardView);
     }
 }

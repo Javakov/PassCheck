@@ -62,18 +62,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-                String service = cursor.getString(cursor.getColumnIndex(COLUMN_SERVICE));
-                String login = cursor.getString(cursor.getColumnIndex(COLUMN_LOGIN));
-                String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
-
-                Password passwordObj = new Password(id, service, login, password);
-                passwordList.add(passwordObj);
-
-                cursor.moveToNext();
-            }
+            do {
+                Password password = new Password(0, "сервис", "логин", "пароль");
+                password.setId(Integer.parseInt(cursor.getString(0)));
+                password.setService(cursor.getString(1));
+                password.setLogin(cursor.getString(2));
+                password.setPassword(cursor.getString(2));
+                passwordList.add(password);
+            } while (cursor.moveToNext());
         }
+
         cursor.close();
         db.close();
         return passwordList;
@@ -81,24 +79,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public List<Password> getPasswordsByService(String searchText) {
         List<Password> passwordList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS + " WHERE " + COLUMN_SERVICE + " LIKE ?";
 
-        Cursor cursor = db.rawQuery(selectQuery, new String[] { searchText });
+        String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS + " WHERE " + COLUMN_SERVICE + " LIKE '%" + searchText + "%'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                int id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-                String service = cursor.getString(cursor.getColumnIndex(COLUMN_SERVICE));
-                String login = cursor.getString(cursor.getColumnIndex(COLUMN_LOGIN));
-                String password = cursor.getString(cursor.getColumnIndex(COLUMN_PASSWORD));
-
-                Password passwordItem = new Password(id, service, login, password);
-                passwordList.add(passwordItem);
+                Password password = new Password(0, "сервис", "логин", "пароль");
+                password.setId(Integer.parseInt(cursor.getString(0)));
+                password.setService(cursor.getString(1));
+                password.setLogin(cursor.getString(2));
+                password.setPassword(cursor.getString(2));
+                passwordList.add(password);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
+        db.close();
         return passwordList;
     }
 
