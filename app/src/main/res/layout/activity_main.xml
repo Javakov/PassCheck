@@ -15,7 +15,8 @@
             android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:hint="Поиск пароля"/>
+            android:hint="Поиск пароля"
+            android:fontFamily="sans-serif-thin"/>
 
         <Button
             android:id="@+id/searchButton"
@@ -24,7 +25,8 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:text="Найти"
-            android:backgroundTint="@color/берюзовый"/>
+            android:backgroundTint="@color/берюзовый"
+            android:fontFamily="sans-serif-thin"/>
 
     </RelativeLayout>
 
@@ -55,6 +57,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:text="Добавить пароль"
-        android:backgroundTint="@color/берюзовый"/>
+        android:backgroundTint="@color/берюзовый"
+        android:fontFamily="sans-serif-thin"/>
 
 </LinearLayout>

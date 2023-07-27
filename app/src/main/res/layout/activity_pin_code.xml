@@ -39,7 +39,7 @@ tools:context=".PinCodeActivity">
     android:text="ВОЙТИ"
     android:background="@drawable/button_border"
     android:fontFamily="sans-serif-thin"
-    android:textStyle="bold"
+
     android:textColor="@color/white"/>
 
 
