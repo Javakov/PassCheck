@@ -1,60 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:paddingLeft="16dp"
-android:paddingTop="16dp"
-android:paddingRight="16dp"
-android:paddingBottom="16dp"
-tools:context=".PinCodeActivity">
-
-<ImageView
-    android:id="@+id/logoImageView"
-    android:layout_width="300dp"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:src="@drawable/logo" />
+    android:paddingLeft="16dp"
+    android:paddingTop="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="16dp"
+    tools:context=".PinCodeActivity">
+
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="315dp"
+        android:layout_height="699dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/pinCodeEditText"
         android:layout_width="96dp"
         android:layout_height="56dp"
         android:layout_centerInParent="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="9dp"
         android:background="@drawable/edittext_border"
         android:gravity="center_vertical|center_horizontal"
         android:inputType="numberPassword"
         android:maxLength="4"
-        android:textSize="30dp" />
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.472" />
 
-<Button
-    android:id="@+id/submitButton"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/pinCodeEditText"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="0dp"
-    android:text="ВОЙТИ"
-    android:background="@drawable/button_border"
-    android:fontFamily="sans-serif"
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/pinCodeEditText"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_border"
+        android:fontFamily="sans-serif"
+        android:text="ВОЙТИ"
 
-    android:textColor="@color/white"/>
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.568" />
+
+    <ImageView
+        android:id="@+id/fingerImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:src="@drawable/finger"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.653" />
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/pinCodeEditText"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-thin"
+        android:text="PassMaster"
+        android:textColor="@color/white"
+        android:textSize="40sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38" />
 
 
-<TextView
-    android:id="@+id/titleTextView"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_above="@id/pinCodeEditText"
-    android:layout_centerHorizontal="true"
-    android:text="PassMaster"
-    android:textSize="40sp"
-    android:fontFamily="sans-serif-thin"
-    android:textStyle="italic"
-    android:textColor="@color/white"/>
-
-
-</RelativeLayout>
-
+</androidx.constraintlayout.widget.ConstraintLayout>
