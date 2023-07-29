@@ -5,12 +5,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,7 +27,10 @@ public class MainActivity extends AppCompatActivity {
     private Button searchButton;
     private EditText searchEditText;
     private DatabaseHelper dbhelp;
+    private Button deleteButton;
 
+    private static final int REQUEST_CODE_ADD_PASSWORD = 1;
+    private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddPasswordActivity.class);
-                showPasswords();
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, REQUEST_CODE_ADD_PASSWORD);
             }
         });
 
@@ -107,18 +111,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_ADD_PASSWORD && resultCode == RESULT_OK) {
             if (data != null) {
                 String service = data.getStringExtra("service");
                 String login = data.getStringExtra("login");
                 String password = data.getStringExtra("password");
 
+
                 // Создание объекта Password с полученными данными
                 Password newPassword = new Password(service, login, password);
-
-                // Добавление нового пароля в список
+                // Добавление нового пароля в базу данных
                 dbhelp.addPassword(newPassword);
-
+                // Обновление отображения списка паролей
+                showPasswords();
+            }
+        }
+        else if (requestCode == REQUEST_CODE_DELETE_PASSWORD && resultCode == RESULT_OK) {
+            if (data != null) {
+                int id = data.getIntExtra("id", 0);
+                dbhelp.deletePasswordById(id);
                 // Обновление отображения списка паролей
                 showPasswords();
             }
@@ -126,13 +137,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+//
+//
+//            if (data != null){
+//                int id = data.getIntExtra("id", 0);
+//                dbhelp.deletePasswordById(id);
+//                showPasswords();
+//            }
+
+
     // метод для отображения всех карточек на экране
     private void showPasswords() {
-        List<Password> PassList = dbhelp.getAllPasswords();
+        List<Password> passwordList = dbhelp.getAllPasswords();
 
         passwordsLayout.removeAllViews();
-        for (int i = PassList.size() - 1; i >= 0; i--) {
-            Password password = PassList.get(i);
+        for (int i = passwordList.size() - 1; i >= 0; i--) {
+            Password password = passwordList.get(i);
+            password.setId(i + 1); // Устанавливаем уникальный идентификатор
             showPassword(password, new ArrayList<>());
         }
     }
@@ -149,42 +171,23 @@ public class MainActivity extends AppCompatActivity {
 
         // Устанавливаем значение поля idTextView
         idTextView.setText(String.valueOf(password.getId()));
-
         serviceTextView.setText(password.getService());
         loginTextView.setText(password.getLogin());
         passwordTextView.setText(password.getPassword());
-
 
         // Добавляем обработчик нажатия на карточку
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, PasswordDetailsActivity.class);
+                intent.putExtra("id", password.getId());
                 intent.putExtra("service", password.getService());
                 intent.putExtra("login", password.getLogin());
                 intent.putExtra("password", password.getPassword());
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_DELETE_PASSWORD);
             }
         });
 
         passwordsLayout.addView(cardView);
     }
 }
-
-
-
-
-//        // устанавливаем обработчик нажатия на кнопку "Удалить"
-//        deleteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Получаем ID карточки, которую нужно удалить
-//                LinearLayout cardLayout = (LinearLayout) buttonLayout.getParent();
-//                TextView idTextView = cardLayout.findViewById(R.id.idTextView);
-//                int cardId = Integer.parseInt(idTextView.getText().toString());
-//
-//                // Удаляем карточку из базы данных и из макета
-//                dbHelper.deleteCardById(cardId);
-//                cardLayout.setVisibility(View.GONE);
-//            }
-//        });

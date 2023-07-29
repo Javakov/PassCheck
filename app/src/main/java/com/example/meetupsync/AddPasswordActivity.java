@@ -22,6 +22,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button saveButton;
     private Button randomButton;
+    private static final int REQUEST_CODE_ADD_PASSWORD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

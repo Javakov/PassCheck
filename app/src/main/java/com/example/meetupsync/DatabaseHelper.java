@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +51,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_PASSWORD, password.getPassword());
 
         db.insert(TABLE_PASSWORDS, null, values);
+        updateIds();
         db.close();
     }
+
+    public void deletePasswordById(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d("DatabaseHelper", "Deleting password with ID: " + id);
+
+        int rowsDeleted = db.delete(TABLE_PASSWORDS, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+        Log.d("DatabaseHelper", "Rows deleted: " + rowsDeleted);
+
+        updateIds();
+
+        db.close();
+    }
+
+    public void updateIds() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PASSWORDS, null);
+
+        if (cursor.moveToFirst()) {
+            int idIndex = cursor.getColumnIndex(COLUMN_ID);
+            int currentIndex = 1;
+
+            do {
+                int id = cursor.getInt(idIndex);
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_ID, currentIndex);
+                db.update(TABLE_PASSWORDS, values, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
+                currentIndex++;
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+    }
+
 
     public List<Password> getAllPasswords() {
         List<Password> passwordList = new ArrayList<>();
@@ -70,6 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }
+        Log.d("DatabaseHelper", "Password list size: " + passwordList.size());
 
         cursor.close();
         db.close();

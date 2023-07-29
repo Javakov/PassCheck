@@ -1,15 +1,14 @@
 package com.example.meetupsync;
 
-import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -17,25 +16,31 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
-
 public class PasswordDetailsActivity extends AppCompatActivity {
 
     private TextView serviceTextView;
     private TextView loginTextView;
     private TextView passwordTextView;
     private Button copyButton;
+    private Button deleteButton;
+    private DatabaseHelper dbhelp;
+    private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_details);
 
+        dbhelp = new DatabaseHelper(PasswordDetailsActivity.this);
+
         serviceTextView = findViewById(R.id.serviceTextView);
         loginTextView = findViewById(R.id.loginTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
         copyButton = findViewById(R.id.copyButton);
+        deleteButton = findViewById(R.id.deleteButton);
 
+        int id = getIntent().getIntExtra("id", 0);
+        Log.d("teg", "id: " + id);
         String service = getIntent().getStringExtra("service");
         String login = getIntent().getStringExtra("login");
         String password = getIntent().getStringExtra("password");
@@ -66,7 +71,16 @@ public class PasswordDetailsActivity extends AppCompatActivity {
                 Toast.makeText(PasswordDetailsActivity.this, "Пароль скопирован", Toast.LENGTH_SHORT).show();
             }
         });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Устанавливаем результат RESULT_OK и передаем ID удаляемого пароля
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("id", id);
+                setResult(RESULT_OK, resultIntent);
+                finish();
+            }
+        });
     }
 }
-
-
