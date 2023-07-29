@@ -45,7 +45,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         String login = getIntent().getStringExtra("login");
         String password = getIntent().getStringExtra("password");
 
-        serviceTextView.setText("https://" + service + ".com");
+        serviceTextView.setText("https://" + service);
         loginTextView.setText(login);
         passwordTextView.setText(password);
 
@@ -54,7 +54,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         serviceTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String serviceUrl = "https://" + service + ".com";
+                String serviceUrl = "https://yandex.ru/search/?text=" + service;
                 Uri uri = Uri.parse(serviceUrl);
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);

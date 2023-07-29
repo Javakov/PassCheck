@@ -86,28 +86,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Если приложение не на переднем плане, завершаем его
-        if (!isAppInForeground()) {
-            finish();
-        }
-    }
-
-    private boolean isAppInForeground() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(1);
-
-        if (!runningTasks.isEmpty()) {
-            ComponentName topActivity = runningTasks.get(0).topActivity;
-            return topActivity.getPackageName().equals(getPackageName());
-        }
-
-        return false;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -135,17 +113,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-
-
-//
-//
-//            if (data != null){
-//                int id = data.getIntExtra("id", 0);
-//                dbhelp.deletePasswordById(id);
-//                showPasswords();
-//            }
-
 
     // метод для отображения всех карточек на экране
     private void showPasswords() {
