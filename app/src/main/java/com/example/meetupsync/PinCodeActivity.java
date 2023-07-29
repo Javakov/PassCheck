@@ -32,14 +32,12 @@ public class PinCodeActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private boolean isFirstRun;
-
-    BiometricPrompt biometricPrompt;
-    BiometricPrompt.PromptInfo promptInfo;
     ConstraintLayout mMainLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EncryptionHelper.initialize(getApplicationContext());
         setContentView(R.layout.activity_pin_code);
 
 

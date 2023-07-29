@@ -51,6 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_LOGIN, encHelp.encrypt(password.getLogin()));
         values.put(COLUMN_PASSWORD, encHelp.encrypt(password.getPassword()));
 
+
         db.insert(TABLE_PASSWORDS, null, values);
         updateIds();
         db.close();
@@ -104,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 password.setService(cursor.getString(1));
                 password.setLogin(encHelp.decrypt(cursor.getString(2)));
                 password.setPassword(encHelp.decrypt(cursor.getString(3)));
+
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }
