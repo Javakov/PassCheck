@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_SERVICE = "service";
     private static final String COLUMN_LOGIN = "login";
     private static final String COLUMN_PASSWORD = "password";
+    private EncryptionHelper encHelp;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -47,8 +48,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_SERVICE, password.getService());
-        values.put(COLUMN_LOGIN, password.getLogin());
-        values.put(COLUMN_PASSWORD, password.getPassword());
+        values.put(COLUMN_LOGIN, encHelp.encrypt(password.getLogin()));
+        values.put(COLUMN_PASSWORD, encHelp.encrypt(password.getPassword()));
 
         db.insert(TABLE_PASSWORDS, null, values);
         updateIds();
@@ -101,8 +102,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 Password password = new Password("сервис", "логин", "пароль");
                 password.setService(cursor.getString(1));
-                password.setLogin(cursor.getString(2));
-                password.setPassword(cursor.getString(3));
+                password.setLogin(encHelp.decrypt(cursor.getString(2)));
+                password.setPassword(encHelp.decrypt(cursor.getString(3)));
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }
