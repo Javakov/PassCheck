@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class PasswordDetailsActivity extends AppCompatActivity {
 
@@ -58,12 +69,71 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         serviceTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String serviceUrl = "https://yandex.ru/search/?text=" + service;
-                Uri uri = Uri.parse(serviceUrl);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                startActivity(intent);
+                ArrayList<String> domen = new ArrayList<String>();
+                domen.add(".com");
+                domen.add(".net");
+                domen.add(".org");
+                domen.add(".ru");
+                domen.add(".de");
+                domen.add(".info");
+
+                String serviceUrl = "https://" + service;
+
+                Executor executor = Executors.newSingleThreadExecutor();
+                 // Создаем финальную копию url для каждой итерации
+
+                    executor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                for (String domain : domen) {
+                                    final String url = serviceUrl + domain;
+                                    URL urlObj = new URL(url);
+                                    HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
+                                    connection.setRequestMethod("GET");
+                                    int responseCode = connection.getResponseCode();
+                                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                                        switch (domain) {
+                                            case ".com":
+                                            case ".net":
+                                            case ".org":
+                                            case ".ru":
+                                            case ".de":
+                                            case ".info":
+                                                Uri uri = Uri.parse(urlObj.toString());
+                                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                                startActivity(intent);
+                                                break;
+                                        }
+                                    }
+                                    else {
+                                        String poiskUrl = "https://yandex.ru/search/?text=" + service;
+                                        Uri uri = Uri.parse(poiskUrl);
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                        startActivity(intent);
+                                    }
+
+                                }
+
+                            }
+                            catch (UnknownHostException e){
+                                String poiskUrl = "https://yandex.ru/search/?text=" + service;
+                                Uri uri = Uri.parse(poiskUrl);
+                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                startActivity(intent);
+                            }
+                            catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
             }
         });
+
+
+
+
+
 
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
