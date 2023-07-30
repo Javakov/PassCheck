@@ -14,12 +14,13 @@
 
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="315dp"
-        android:layout_height="699dp"
+        android:layout_width="223dp"
+        android:layout_height="697dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/logo"
+        android:src="@drawable/castle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +29,7 @@
         android:layout_width="96dp"
         android:layout_height="56dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/edittext_border"
+        android:background="@drawable/button_border"
         android:gravity="center_vertical|center_horizontal"
         android:inputType="numberPassword"
         android:maxLength="4"
@@ -38,36 +39,38 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.472" />
+        app:layout_constraintVertical_bias="0.704" />
 
     <Button
         android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="105dp"
+        android:layout_height="51dp"
         android:layout_below="@id/pinCodeEditText"
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_border"
         android:fontFamily="sans-serif"
-        android:text="ВОЙТИ"
 
-        android:textColor="@color/white"
+        android:text="ВОЙТИ"
+        android:textColor="@color/берюзовый"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.264"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.568" />
+        app:layout_constraintVertical_bias="0.811" />
 
     <ImageView
         android:id="@+id/fingerImageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:clickable="true"
-        android:src="@drawable/finger"
+        android:src="@drawable/finger_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.739"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.653" />
+        app:layout_constraintVertical_bias="0.811" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -77,15 +80,14 @@
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
         android:text="PassMaster"
-        android:textColor="@color/white"
-        android:textSize="40sp"
+        android:textColor="@color/берюзовый"
+        android:textSize="45sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.38" />
+        app:layout_constraintVertical_bias="0.294" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

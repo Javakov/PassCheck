@@ -6,11 +6,13 @@ public class Password {
     private String service;
     private String login;
     private String password;
+    private String comment;
 
-    public Password(String service, String login, String password) {
+    public Password(String service, String login, String password, String comment) {
         this.service = service;
         this.login = login;
         this.password = password;
+        this.comment = comment;
     }
 
     public int getId() {
@@ -36,6 +38,12 @@ public class Password {
     }
     public void setPassword(String password){
         this.password = password;
+    }
+    public String getComment(){
+        return comment;
+    }
+    public void setComment(String comment){
+        this.comment = comment;
     }
 }
 

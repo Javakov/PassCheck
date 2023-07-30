@@ -21,6 +21,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
     private TextView serviceTextView;
     private TextView loginTextView;
     private TextView passwordTextView;
+    private TextView commentTextView;
     private Button copyButton;
     private Button deleteButton;
     private DatabaseHelper dbhelp;
@@ -36,6 +37,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         serviceTextView = findViewById(R.id.serviceTextView);
         loginTextView = findViewById(R.id.loginTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
+        commentTextView = findViewById(R.id.commentTextView);
         copyButton = findViewById(R.id.copyButton);
         deleteButton = findViewById(R.id.deleteButton);
 
@@ -44,10 +46,12 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         String service = getIntent().getStringExtra("service");
         String login = getIntent().getStringExtra("login");
         String password = getIntent().getStringExtra("password");
+        String comment = getIntent().getStringExtra("comment");
 
         serviceTextView.setText("https://" + service);
         loginTextView.setText(login);
         passwordTextView.setText(password);
+        commentTextView.setText(comment);
 
         serviceTextView.setTypeface(null, Typeface.ITALIC);
         serviceTextView.setPaintFlags(serviceTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -64,9 +68,9 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         copyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String passwordToCopy = passwordTextView.getText().toString();
+                // String passwordToCopy = passwordTextView.getText().toString();
                 ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("password", passwordToCopy);
+                ClipData clip = ClipData.newPlainText("password", password);
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(PasswordDetailsActivity.this, "Пароль скопирован", Toast.LENGTH_SHORT).show();
             }

@@ -94,10 +94,11 @@ public class MainActivity extends AppCompatActivity {
                 String service = data.getStringExtra("service");
                 String login = data.getStringExtra("login");
                 String password = data.getStringExtra("password");
+                String comment = data.getStringExtra("comment");
 
 
                 // Создание объекта Password с полученными данными
-                Password newPassword = new Password(service, login, password);
+                Password newPassword = new Password(service, login, password, comment);
                 // Добавление нового пароля в базу данных
                 dbhelp.addPassword(newPassword);
                 // Обновление отображения списка паролей
@@ -135,12 +136,14 @@ public class MainActivity extends AppCompatActivity {
         TextView serviceTextView = cardView.findViewById(R.id.serviceTextView);
         TextView loginTextView = cardView.findViewById(R.id.loginTextView);
         TextView passwordTextView = cardView.findViewById(R.id.passwordTextView);
+        TextView commentTextView = cardView.findViewById(R.id.commentTextView);
 
         // Устанавливаем значение поля idTextView
         idTextView.setText(String.valueOf(password.getId()));
         serviceTextView.setText(password.getService());
         loginTextView.setText(password.getLogin());
         passwordTextView.setText(password.getPassword());
+        commentTextView.setText(password.getComment());
 
         // Добавляем обработчик нажатия на карточку
         cardView.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("service", password.getService());
                 intent.putExtra("login", password.getLogin());
                 intent.putExtra("password", password.getPassword());
+                intent.putExtra("comment", password.getComment());
                 startActivityForResult(intent, REQUEST_CODE_DELETE_PASSWORD);
             }
         });

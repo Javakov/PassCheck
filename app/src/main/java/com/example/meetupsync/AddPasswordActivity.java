@@ -20,6 +20,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     private EditText serviceEditText;
     private EditText loginEditText;
     private EditText passwordEditText;
+    private EditText commentEditText;
     private Button saveButton;
     private Button randomButton;
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
@@ -32,6 +33,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         serviceEditText = findViewById(R.id.serviceEditText);
         loginEditText = findViewById(R.id.loginEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
+        commentEditText = findViewById(R.id.commentEditText);
         saveButton = findViewById(R.id.saveButton);
         randomButton = findViewById(R.id.randomButton);
 
@@ -41,6 +43,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                 String service = serviceEditText.getText().toString();
                 String login = loginEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
+                String comment = commentEditText.getText().toString();
 
                 if (service.isEmpty() || login.isEmpty() || password.isEmpty()) {
                     Toast.makeText(AddPasswordActivity.this, "Введите название сервиса, логин и пароль", Toast.LENGTH_SHORT).show();
@@ -49,6 +52,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                     intent.putExtra("service", service);
                     intent.putExtra("login", login);
                     intent.putExtra("password", password);
+                    intent.putExtra("comment", comment);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
