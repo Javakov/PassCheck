@@ -1,10 +1,14 @@
 package com.example.meetupsync;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,6 +27,12 @@ public class AddPasswordActivity extends AppCompatActivity {
     private EditText commentEditText;
     private Button saveButton;
     private Button randomButton;
+    private Button labelButton;
+    private EditText labelNameEditText;
+    private Button colorPickerButton;
+    private Button addLabelButton;
+    private int labelColor = Color.RED;
+    private String label;
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
 
     @Override
@@ -36,6 +46,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         commentEditText = findViewById(R.id.commentEditText);
         saveButton = findViewById(R.id.saveButton);
         randomButton = findViewById(R.id.randomButton);
+        labelButton = findViewById(R.id.labelButton);
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,6 +64,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                     intent.putExtra("login", login);
                     intent.putExtra("password", password);
                     intent.putExtra("comment", comment);
+                    intent.putExtra("label", label);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -67,7 +79,75 @@ public class AddPasswordActivity extends AppCompatActivity {
                 passwordEditText.setText(password);
             }
         });
+
+        labelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddLabelDialog();
+            }
+        });
     }
+
+    private void showAddLabelDialog() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add_label, null);
+        dialogBuilder.setView(dialogView);
+
+        labelNameEditText = dialogView.findViewById(R.id.labelNameEditText);
+        colorPickerButton = dialogView.findViewById(R.id.colorPickerButton);
+        addLabelButton = dialogView.findViewById(R.id.addLabelButton);
+
+        AlertDialog alertDialog = dialogBuilder.create();
+
+        addLabelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                label = labelNameEditText.getText().toString();
+
+                alertDialog.dismiss();
+
+            }
+        });
+
+        colorPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showColorPickerDialog();
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void showColorPickerDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Выберите цвет");
+
+        // Создаем слушатель для выбора цвета
+        DialogInterface.OnClickListener colorPickerListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int color) {
+                // Обработка выбранного цвета
+                labelColor = color;
+                // Можно также обновить внешний вид кнопки выбора цвета
+                colorPickerButton.setBackgroundColor(labelColor);
+            }
+        };
+
+        // Устанавливаем слушатель для диалогового окна выбора цвета
+        builder.setPositiveButton("Выбрать", colorPickerListener);
+        builder.setNegativeButton("Отмена", null);
+
+        // Создаем диалоговое окно выбора цвета
+        AlertDialog colorPickerDialog = builder.create();
+
+        // Отображаем диалоговое окно
+        colorPickerDialog.show();
+    }
+
+
+
+
 
     private String generateSuperSecurePassword() {
         int length = 16; // Длина пароля

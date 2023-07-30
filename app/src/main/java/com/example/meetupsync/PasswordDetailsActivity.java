@@ -49,6 +49,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
     private TextView loginTextView;
     private TextView passwordTextView;
     private TextView commentTextView;
+    private TextView labelTextView;
     private Button copyButton;
     private Button deleteButton;
     private ProgressBar loadingProgressBar;
@@ -66,6 +67,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         loginTextView = findViewById(R.id.loginTextView);
         passwordTextView = findViewById(R.id.passwordTextView);
         commentTextView = findViewById(R.id.commentTextView);
+        labelTextView = findViewById(R.id.labelTextView);
         copyButton = findViewById(R.id.copyButton);
         deleteButton = findViewById(R.id.deleteButton);
         loadingProgressBar = findViewById(R.id.loadingProgressBar);
@@ -76,11 +78,13 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         String login = getIntent().getStringExtra("login");
         String password = getIntent().getStringExtra("password");
         String comment = getIntent().getStringExtra("comment");
+        String label = getIntent().getStringExtra("label");
 
         serviceTextView.setText("https://" + service);
         loginTextView.setText(login);
         passwordTextView.setText(password);
         commentTextView.setText(comment);
+        labelTextView.setText(label);
 
         serviceTextView.setTypeface(null, Typeface.ITALIC);
         serviceTextView.setPaintFlags(serviceTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -141,15 +145,15 @@ public class PasswordDetailsActivity extends AppCompatActivity {
                                         alphabet[i] = (char) ('a' + i); // Заполняем массив буквами английского алфавита
                                     }
 
-                                    if (link.startsWith("https://" + service) || link.startsWith("https://www." + service)
-                                            || link.startsWith("http://" + service) || link.startsWith("http://www." + service)) {
+                                    if (link.startsWith("https://" + service.toLowerCase()) || link.startsWith("https://www." + service.toLowerCase())
+                                            || link.startsWith("http://" + service.toLowerCase()) || link.startsWith("http://www." + service.toLowerCase())) {
                                         Log.d("Service", "Service: " + service);
                                         firstLinkUrl = link;
                                         break;
                                     }
                                     else {
                                         for (char letter : alphabet) {
-                                            if (link.startsWith("https://" + letter + ".www." + service) || link.startsWith("https://" + letter + "." + service)) {
+                                            if (link.startsWith("https://" + letter + ".www." + service.toLowerCase()) || link.startsWith("https://" + letter + "." + service.toLowerCase())) {
                                                 Log.d("Service", "Service + char: " + service);
                                                 firstLinkUrl = link;
                                                 break;

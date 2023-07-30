@@ -7,12 +7,14 @@ public class Password {
     private String login;
     private String password;
     private String comment;
+    private String label;
 
-    public Password(String service, String login, String password, String comment) {
+    public Password(String service, String login, String password, String comment, String label) {
         this.service = service;
         this.login = login;
         this.password = password;
         this.comment = comment;
+        this.label = label;
     }
 
     public int getId() {
@@ -44,6 +46,12 @@ public class Password {
     }
     public void setComment(String comment){
         this.comment = comment;
+    }
+    public String getLabel(){
+        return label;
+    }
+    public void setLabel(String label){
+        this.label = label;
     }
 }
 

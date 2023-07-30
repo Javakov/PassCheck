@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private Button searchButton;
     private EditText searchEditText;
     private DatabaseHelper dbhelp;
-    private Button deleteButton;
 
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
     private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
@@ -95,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 String login = data.getStringExtra("login");
                 String password = data.getStringExtra("password");
                 String comment = data.getStringExtra("comment");
-
+                String label = data.getStringExtra("label");
 
                 // Создание объекта Password с полученными данными
-                Password newPassword = new Password(service, login, password, comment);
+                Password newPassword = new Password(service, login, password, comment, label);
                 // Добавление нового пароля в базу данных
                 dbhelp.addPassword(newPassword);
                 // Обновление отображения списка паролей
@@ -137,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         TextView loginTextView = cardView.findViewById(R.id.loginTextView);
         TextView passwordTextView = cardView.findViewById(R.id.passwordTextView);
         TextView commentTextView = cardView.findViewById(R.id.commentTextView);
+        TextView labelTextView = cardView.findViewById(R.id.labelTextView);
 
         // Устанавливаем значение поля idTextView
         idTextView.setText(String.valueOf(password.getId()));
@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         loginTextView.setText(password.getLogin());
         passwordTextView.setText(password.getPassword());
         commentTextView.setText(password.getComment());
+        labelTextView.setText(password.getLabel());
 
         // Добавляем обработчик нажатия на карточку
         cardView.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("login", password.getLogin());
                 intent.putExtra("password", password.getPassword());
                 intent.putExtra("comment", password.getComment());
+                intent.putExtra("label", password.getLabel());
                 startActivityForResult(intent, REQUEST_CODE_DELETE_PASSWORD);
             }
         });

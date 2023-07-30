@@ -20,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_LOGIN = "login";
     private static final String COLUMN_PASSWORD = "password";
     private static final String COLUMN_COMMENT = "comment";
+    private static final String COLUMN_LABEL = "label";
     private EncryptionHelper encHelp;
 
     public DatabaseHelper(Context context) {
@@ -34,7 +35,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_SERVICE + " TEXT," +
                 COLUMN_LOGIN + " TEXT," +
                 COLUMN_PASSWORD + " TEXT," +
-                COLUMN_COMMENT + " TEXT" +
+                COLUMN_COMMENT + " TEXT," +
+                COLUMN_LABEL + " TEXT" +
                 ")";
         db.execSQL(CREATE_PASSWORDS_TABLE);
     }
@@ -53,6 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_LOGIN, encHelp.encrypt(password.getLogin()));
         values.put(COLUMN_PASSWORD, encHelp.encrypt(password.getPassword()));
         values.put(COLUMN_COMMENT, password.getComment());
+        values.put(COLUMN_LABEL, password.getLabel());
 
 
         db.insert(TABLE_PASSWORDS, null, values);
@@ -104,11 +107,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Password password = new Password("сервис", "логин", "пароль", "комментарий");
+                Password password = new Password("сервис", "логин", "пароль", "комментарий", "тег");
                 password.setService(cursor.getString(1));
                 password.setLogin(encHelp.decrypt(cursor.getString(2)));
                 password.setPassword(encHelp.decrypt(cursor.getString(3)));
                 password.setComment(cursor.getString(4));
+                password.setLabel(cursor.getString(5));
 
                 passwordList.add(password);
             } while (cursor.moveToNext());
@@ -130,11 +134,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Password password = new Password("сервис", "логин", "пароль", "комментарий");
+                Password password = new Password("сервис", "логин", "пароль", "комментарий", "тег");
                 password.setService(cursor.getString(1));
                 password.setLogin(cursor.getString(2));
                 password.setPassword(cursor.getString(3));
                 password.setComment(cursor.getString(4));
+                password.setLabel(cursor.getString(5));
                 passwordList.add(password);
             } while (cursor.moveToNext());
         }
