@@ -20,9 +20,10 @@
         android:src="@drawable/castle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/pinCodeEditText"
@@ -47,7 +48,7 @@
         android:layout_height="51dp"
         android:layout_below="@id/pinCodeEditText"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/button_border"
+        android:background="@drawable/button_border_gone"
         android:fontFamily="sans-serif"
 
         android:text="ВОЙТИ"
