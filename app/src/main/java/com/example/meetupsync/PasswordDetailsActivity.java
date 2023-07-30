@@ -135,11 +135,26 @@ public class PasswordDetailsActivity extends AppCompatActivity {
                                 for (String link : links) {
                                     Log.d("Links", "link: " + link);
                                     assert service != null;
+
+                                    char[] alphabet = new char[26]; // Создаем массив длиной 26 (количество букв в английском алфавите)
+                                    for (int i = 0; i < 26; i++) {
+                                        alphabet[i] = (char) ('a' + i); // Заполняем массив буквами английского алфавита
+                                    }
+
                                     if (link.startsWith("https://" + service) || link.startsWith("https://www." + service)
                                             || link.startsWith("http://" + service) || link.startsWith("http://www." + service)) {
                                         Log.d("Service", "Service: " + service);
                                         firstLinkUrl = link;
                                         break;
+                                    }
+                                    else {
+                                        for (char letter : alphabet) {
+                                            if (link.startsWith("https://" + letter + ".www." + service) || link.startsWith("https://" + letter + "." + service)) {
+                                                Log.d("Service", "Service + char: " + service);
+                                                firstLinkUrl = link;
+                                                break;
+                                            }
+                                        }
                                     }
                                 }
 
