@@ -9,23 +9,39 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class PasswordDetailsActivity extends AppCompatActivity {
 
@@ -35,6 +51,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
     private TextView commentTextView;
     private Button copyButton;
     private Button deleteButton;
+    private ProgressBar loadingProgressBar;
     private DatabaseHelper dbhelp;
     private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
 
@@ -51,6 +68,7 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         commentTextView = findViewById(R.id.commentTextView);
         copyButton = findViewById(R.id.copyButton);
         deleteButton = findViewById(R.id.deleteButton);
+        loadingProgressBar = findViewById(R.id.loadingProgressBar);
 
         int id = getIntent().getIntExtra("id", 0);
         Log.d("teg", "id: " + id);
@@ -69,70 +87,81 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         serviceTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> domen = new ArrayList<String>();
-                domen.add(".com");
-                domen.add(".net");
-                domen.add(".org");
-                domen.add(".ru");
-                domen.add(".de");
-                domen.add(".info");
+                animateClick(serviceTextView);
+                String searchUrl = "https://www.google.com/search?q=" + service;
 
-                String serviceUrl = "https://" + service;
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                Future<String> future = executor.submit(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        try {
+                            URL url = new URL(searchUrl);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setRequestMethod("GET");
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                            StringBuilder stringBuilder = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                stringBuilder.append(line);
+                            }
+                            reader.close();
+                            return stringBuilder.toString();
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
 
-                Executor executor = Executors.newSingleThreadExecutor();
-                 // Создаем финальную копию url для каждой итерации
-
-                    executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                for (String domain : domen) {
-                                    final String url = serviceUrl + domain;
-                                    URL urlObj = new URL(url);
-                                    HttpURLConnection connection = (HttpURLConnection) urlObj.openConnection();
-                                    connection.setRequestMethod("GET");
-                                    int responseCode = connection.getResponseCode();
-                                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                                        switch (domain) {
-                                            case ".com":
-                                            case ".net":
-                                            case ".org":
-                                            case ".ru":
-                                            case ".de":
-                                            case ".info":
-                                                Uri uri = Uri.parse(urlObj.toString());
-                                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                                startActivity(intent);
-                                                break;
-                                        }
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL url = new URL(searchUrl);
+                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                            connection.setRequestMethod("GET");
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                            StringBuilder stringBuilder = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                stringBuilder.append(line);
+                            }
+                            reader.close();
+                            String htmlContent = stringBuilder.toString();
+                            if (htmlContent != null) {
+                                ArrayList<String> links = extractLinks(htmlContent);
+                                String firstLinkUrl = null;
+                                for (String link : links) {
+                                    Log.d("Links", "link: " + link);
+                                    assert service != null;
+                                    if (link.startsWith("https://" + service) || link.startsWith("https://www." + service)
+                                            || link.startsWith("http://" + service) || link.startsWith("http://www." + service)) {
+                                        Log.d("Service", "Service: " + service);
+                                        firstLinkUrl = link;
+                                        break;
                                     }
-                                    else {
-                                        String poiskUrl = "https://yandex.ru/search/?text=" + service;
-                                        Uri uri = Uri.parse(poiskUrl);
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                        startActivity(intent);
-                                    }
-
                                 }
 
+                                if (firstLinkUrl != null) {
+                                    Uri uri = Uri.parse(firstLinkUrl);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    String poiskUrl = "https://yandex.ru/search/?text=" + service;
+                                    Uri uri = Uri.parse(poiskUrl);
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                    startActivity(intent);
+                                }
                             }
-                            catch (UnknownHostException e){
-                                String poiskUrl = "https://yandex.ru/search/?text=" + service;
-                                Uri uri = Uri.parse(poiskUrl);
-                                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                                startActivity(intent);
-                            }
-                            catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
+                });
             }
         });
-
-
-
-
 
 
         copyButton.setOnClickListener(new View.OnClickListener() {
@@ -157,4 +186,39 @@ public class PasswordDetailsActivity extends AppCompatActivity {
             }
         });
     }
+
+    private ArrayList<String> extractLinks(String htmlContent) {
+        ArrayList<String> links = new ArrayList<>();
+        Document doc = Jsoup.parse(htmlContent);
+        Elements linkElements = doc.select("a[href]");
+        for (Element linkElement : linkElements) {
+            String linkUrl = linkElement.absUrl("href");
+            links.add(linkUrl);
+        }
+        return links;
+    }
+
+    private void animateClick(View view) {
+        Animation animation = new ScaleAnimation(1.0f, 0.9f, 1.0f, 0.9f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(100);
+        animation.setRepeatCount(1);
+        animation.setRepeatMode(Animation.REVERSE);
+        view.startAnimation(animation);
+
+        loadingProgressBar.setVisibility(View.VISIBLE); // Показать ProgressBar
+
+        // Дополнительные действия при нажатии на serviceTextView
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                loadingProgressBar.setVisibility(View.GONE); // Скрыть ProgressBar после задержки
+            }
+        }, 5000); // Задержка в миллисекундах (в данном примере - 500 миллисекунд)
+    }
+
+
+
+
 }
