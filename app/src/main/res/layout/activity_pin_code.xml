@@ -81,7 +81,7 @@
         android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-thin"
         android:text="PassMaster"
-        android:textColor="@color/берюзовый"
+        android:textColor="@color/персиковый"
         android:textSize="45sp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -120,13 +120,6 @@ public class AddPasswordActivity extends AppCompatActivity {
             }
         });
 
-        colorPickerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showColorPickerDialog();
-            }
-        });
-
         // Получаем список всех меток из базы данных
         List<Password> labels = dbhelp.getAllLabels();
         Set<String> labelSet = new HashSet<>();
@@ -155,11 +148,15 @@ public class AddPasswordActivity extends AppCompatActivity {
 
             }
         });
+        colorPickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showColorPickerDialog();
+            }
+        });
 
         alertDialog.show();
     }
-
-
 
     private void showColorPickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -170,9 +167,9 @@ public class AddPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int color) {
                 // Обработка выбранного цвета
-                labelColor = color;
+                color = labelColor;
                 // Можно также обновить внешний вид кнопки выбора цвета
-                colorPickerButton.setBackgroundColor(labelColor);
+                colorPickerButton.setBackgroundColor(color);
             }
         };
 
@@ -186,10 +183,6 @@ public class AddPasswordActivity extends AppCompatActivity {
         // Отображаем диалоговое окно
         colorPickerDialog.show();
     }
-
-
-
-
 
     private String generateSuperSecurePassword() {
         int length = 16; // Длина пароля

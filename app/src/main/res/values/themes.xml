@@ -2,15 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.MeetupSync" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#FBFDFF</item>
-        <item name="colorPrimaryVariant">#2493F8</item>
+        <item name="colorPrimaryVariant">@color/берюзовый</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#2492F7</item>
         <item name="colorSecondaryVariant">#2492F7</item>
         <item name="colorOnSecondary">#2491F6</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">#2490F5</item>
-        <item name="android:navigationBarColor">#248FF4</item>
+        <item name="android:statusBarColor">@color/берюзовый</item>
+        <item name="android:navigationBarColor">@color/персиковый</item>
         <item name="android:windowLightNavigationBar">true</item>
 
     </style>
