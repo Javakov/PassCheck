@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        encHelp = new EncryptionHelper();
     }
 
     @Override
@@ -124,10 +125,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return passwordList;
     }
 
+    public List<Password> getAllLabels(){
+        List<Password> passwordList = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Password password = new Password("сервис", "логин", "пароль", "комментарий", "тег");
+                password.setLabel(cursor.getString(5));
+
+                passwordList.add(password);
+            } while (cursor.moveToNext());
+        }
+        Log.d("DatabaseHelper", "Password list size: " + passwordList.size());
+
+        cursor.close();
+        db.close();
+        return passwordList;
+    }
+
     public List<Password> getPasswordsByService(String searchText) {
         List<Password> passwordList = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS + " WHERE " + COLUMN_SERVICE + " LIKE '%" + searchText + "%'";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Password password = new Password("сервис", "логин", "пароль", "комментарий", "тег");
+                password.setService(cursor.getString(1));
+                password.setLogin(cursor.getString(2));
+                password.setPassword(cursor.getString(3));
+                password.setComment(cursor.getString(4));
+                password.setLabel(cursor.getString(5));
+                passwordList.add(password);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return passwordList;
+    }
+
+    public List<Password> getPasswordsByLabel(String label) {
+        List<Password> passwordList = new ArrayList<>();
+
+        String selectQuery = "SELECT * FROM " + TABLE_PASSWORDS + " WHERE " + COLUMN_LABEL + " LIKE '%" + label + "%'";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

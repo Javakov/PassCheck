@@ -1,8 +1,10 @@
 package com.example.meetupsync;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +20,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private Button searchButton;
     private EditText searchEditText;
     private DatabaseHelper dbhelp;
+    private Button checkLabelButton;
+    private String selectedLabel;
+
 
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
     private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
@@ -40,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         addPasswordButton = findViewById(R.id.addPasswordButton);
         searchButton = findViewById(R.id.searchButton);
         searchEditText = findViewById(R.id.searchEditText);
+        checkLabelButton = findViewById(R.id.checkLabelButton);
 
         dbhelp = new DatabaseHelper(this);
         showPasswords();
@@ -69,20 +77,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        checkLabelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showLabelsDialog();
+                showPasswords();
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
         // Проверяем, открыто ли поле поиска
         if (searchEditText.getVisibility() == View.VISIBLE) {
-
             // Сбрасываем текст поиска
             searchEditText.setText("");
-
             // Показываем все карточки
             showPasswords();
         }
+        if (selectedLabel != null) {
+            // Если выбрана метка, сбрасываем выбранную метку и показываем все карточки
+            selectedLabel = null;
+            showPasswords();
+        }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -114,9 +134,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void showLabelsDialog() {
+        Set<String> labelSet = new HashSet<>();
+        List<Password> labels = dbhelp.getAllLabels();
+
+        for (Password password : labels) {
+            labelSet.add(password.getLabel());
+        }
+
+        final String[] labelArray = labelSet.toArray(new String[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Метки")
+                .setItems(labelArray, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        selectedLabel = labelArray[i];
+                        showPasswords();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
     // метод для отображения всех карточек на экране
     private void showPasswords() {
         List<Password> passwordList = dbhelp.getAllPasswords();
+
+        if (selectedLabel != null) {
+            passwordList = dbhelp.getPasswordsByLabel(selectedLabel);
+        } else {
+            passwordList = dbhelp.getAllPasswords();
+        }
 
         passwordsLayout.removeAllViews();
         for (int i = passwordList.size() - 1; i >= 0; i--) {
@@ -160,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_CODE_DELETE_PASSWORD);
             }
         });
-
         passwordsLayout.addView(cardView);
     }
 }

@@ -5,12 +5,27 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Запишите новую или выберите существующую:"
+        android:fontFamily="sans-serif"
+        android:textSize="23dp"
+        />
+
     <EditText
         android:id="@+id/labelNameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Название метки"
+        android:hint=""
         android:fontFamily="sans-serif"/>
+
+    <Spinner
+        android:id="@+id/labelSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" />
+
 
     <Button
         android:id="@+id/colorPickerButton"

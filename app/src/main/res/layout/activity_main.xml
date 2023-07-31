@@ -42,7 +42,6 @@
             android:divider="@drawable/divider"
             android:orientation="vertical"
             android:showDividers="middle" />
-
     </ScrollView>
 
     <View
@@ -50,14 +49,42 @@
         android:layout_height="1dp"
         android:background="@color/grey" />
 
-    <Button
-        android:id="@+id/addPasswordButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/buttonLayout1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="Добавить пароль"
-        android:backgroundTint="@color/берюзовый"
-        android:fontFamily="sans-serif"/>
+        android:orientation="horizontal"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/addPasswordButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="Добавить пароль"
+            android:backgroundTint="@color/берюзовый"
+            android:fontFamily="sans-serif"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/checkLabelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:layout_marginRight="10dp"
+            android:text="Метки"
+            android:backgroundTint="@color/персиковый"
+            android:fontFamily="sans-serif"/>
+
+
+
+    </LinearLayout>
 
 </LinearLayout>

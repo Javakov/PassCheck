@@ -10,14 +10,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class AddPasswordActivity extends AppCompatActivity {
 
@@ -33,11 +39,17 @@ public class AddPasswordActivity extends AppCompatActivity {
     private Button addLabelButton;
     private int labelColor = Color.RED;
     private String label;
+    private Spinner labelSpinner;
+
+    private DatabaseHelper dbhelp;
+    private String selectedLabel;
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dbhelp = new DatabaseHelper(this);
+
         setContentView(R.layout.activity_add_password);
 
         serviceEditText = findViewById(R.id.serviceEditText);
@@ -71,7 +83,6 @@ public class AddPasswordActivity extends AppCompatActivity {
             }
         });
 
-
         randomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +108,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         labelNameEditText = dialogView.findViewById(R.id.labelNameEditText);
         colorPickerButton = dialogView.findViewById(R.id.colorPickerButton);
         addLabelButton = dialogView.findViewById(R.id.addLabelButton);
+        labelSpinner = dialogView.findViewById(R.id.labelSpinner);
 
         AlertDialog alertDialog = dialogBuilder.create();
 
@@ -104,9 +116,7 @@ public class AddPasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 label = labelNameEditText.getText().toString();
-
                 alertDialog.dismiss();
-
             }
         });
 
@@ -116,8 +126,40 @@ public class AddPasswordActivity extends AppCompatActivity {
                 showColorPickerDialog();
             }
         });
+
+        // Получаем список всех меток из базы данных
+        List<Password> labels = dbhelp.getAllLabels();
+        Set<String> labelSet = new HashSet<>();
+
+        for (Password password : labels) {
+            labelSet.add(password.getLabel());
+        }
+
+        // Создаем адаптер для списка меток
+        ArrayAdapter<String> labelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>(labelSet));
+        labelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Устанавливаем адаптер для элемента Spinner
+        labelSpinner.setAdapter(labelAdapter);
+
+        // Устанавливаем слушатель для выбора метки из списка
+        labelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                String selectedLabel = (String) adapterView.getItemAtPosition(position);
+                labelNameEditText.setText(selectedLabel);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         alertDialog.show();
     }
+
+
 
     private void showColorPickerDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
