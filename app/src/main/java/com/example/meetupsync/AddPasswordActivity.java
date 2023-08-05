@@ -152,6 +152,7 @@ public class AddPasswordActivity extends AppCompatActivity {
 
         alertDialog.show();
     }
+
     private String generateSuperSecurePassword() {
         int length = 16; // Длина пароля
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";

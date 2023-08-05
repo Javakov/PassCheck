@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinearLayout passwordsLayout;
     private Button addPasswordButton;
-    private Button searchButton;
-    private EditText searchEditText;
+    private SearchView searchView;
     private DatabaseHelper dbhelp;
     private Button checkLabelButton;
     private String selectedLabel;
@@ -43,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        searchView = findViewById(R.id.searchView);
         passwordsLayout = findViewById(R.id.passwordsLayout);
         addPasswordButton = findViewById(R.id.addPasswordButton);
-        searchButton = findViewById(R.id.searchButton);
-        searchEditText = findViewById(R.id.searchEditText);
         checkLabelButton = findViewById(R.id.checkLabelButton);
 
         dbhelp = new DatabaseHelper(this);
@@ -60,21 +59,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // обработка нажатия кнопки поиска
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        // обработка события поиска
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void onClick(View v) {
-                String searchText = searchEditText.getText().toString();
+            public boolean onQueryTextSubmit(String query) {
+                performSearch(query);
+                return true;
+            }
 
-                // поиск карточек по тексту вопроса
-                List<Password> passwordList = dbhelp.getPasswordsByService(searchText);
-                Collections.reverse(passwordList);
-
-                // вывод результатов поиска
-                passwordsLayout.removeAllViews();
-                for (Password password : passwordList) {
-                    showPassword(password, new ArrayList<>());
-                }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Выполнить поиск при изменении текста в SearchView (необязательно)
+                performSearch(newText);
+                return true;
             }
         });
 
@@ -90,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Проверяем, открыто ли поле поиска
-        if (searchEditText.getVisibility() == View.VISIBLE) {
+        if (!searchView.isIconified()) {
             // Сбрасываем текст поиска
-            searchEditText.setText("");
+            searchView.setQuery("", false);
+            searchView.setIconified(true);
             // Показываем все карточки
             showPasswords();
         }
@@ -162,7 +160,16 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    // метод для выполнения поиска
+    private void performSearch(String query) {
+        List<Password> cardList = dbhelp.getPasswordsByService(query);
+        Collections.reverse(cardList);
 
+        passwordsLayout.removeAllViews();
+        for (Password password : cardList) {
+            showPassword(password);
+        }
+    }
 
     // метод для отображения всех карточек на экране
     private void showPasswords() {
@@ -178,12 +185,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = passwordList.size() - 1; i >= 0; i--) {
             Password password = passwordList.get(i);
             password.setId(i + 1); // Устанавливаем уникальный идентификатор
-            showPassword(password, new ArrayList<>());
+            showPassword(password);
         }
     }
 
     // метод для отображения одной карточки на экране
-    private void showPassword(Password password, List<View> selectedCards) {
+    private void showPassword(Password password) {
         LayoutInflater inflater = getLayoutInflater();
         View cardView = inflater.inflate(R.layout.list_item_password, null);
 
