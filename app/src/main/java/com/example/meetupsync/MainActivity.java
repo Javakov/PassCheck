@@ -138,8 +138,13 @@ public class MainActivity extends AppCompatActivity {
         Set<String> labelSet = new HashSet<>();
         List<Password> labels = dbhelp.getAllLabels();
 
-        for (Password password : labels) {
-            labelSet.add(password.getLabel());
+        if (labels != null) { // Добавляем проверку на null
+            for (Password password : labels) {
+                String label = password.getLabel();
+                if (label != null) {
+                    labelSet.add(label);
+                }
+            }
         }
 
         final String[] labelArray = labelSet.toArray(new String[0]);
@@ -156,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 
     // метод для отображения всех карточек на экране

@@ -26,15 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp" />
 
-
-    <Button
-        android:id="@+id/colorPickerButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/color_picker_button" />
-
     <Button
         android:id="@+id/addLabelButton"
         android:layout_width="wrap_content"

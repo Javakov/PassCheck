@@ -35,14 +35,11 @@ public class AddPasswordActivity extends AppCompatActivity {
     private Button randomButton;
     private Button labelButton;
     private EditText labelNameEditText;
-    private Button colorPickerButton;
     private Button addLabelButton;
     private int labelColor = Color.RED;
     private String label;
     private Spinner labelSpinner;
-
     private DatabaseHelper dbhelp;
-    private String selectedLabel;
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
 
     @Override
@@ -70,7 +67,11 @@ public class AddPasswordActivity extends AppCompatActivity {
 
                 if (service.isEmpty() || login.isEmpty() || password.isEmpty()) {
                     Toast.makeText(AddPasswordActivity.this, "Введите название сервиса, логин и пароль", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else if (label == null) {
+                    Toast.makeText(AddPasswordActivity.this, "Выберите метку", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     Intent intent = new Intent();
                     intent.putExtra("service", service);
                     intent.putExtra("login", login);
@@ -94,6 +95,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         labelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 showAddLabelDialog();
             }
         });
@@ -106,7 +108,6 @@ public class AddPasswordActivity extends AppCompatActivity {
         dialogBuilder.setView(dialogView);
 
         labelNameEditText = dialogView.findViewById(R.id.labelNameEditText);
-        colorPickerButton = dialogView.findViewById(R.id.colorPickerButton);
         addLabelButton = dialogView.findViewById(R.id.addLabelButton);
         labelSpinner = dialogView.findViewById(R.id.labelSpinner);
 
@@ -148,42 +149,9 @@ public class AddPasswordActivity extends AppCompatActivity {
 
             }
         });
-        colorPickerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showColorPickerDialog();
-            }
-        });
 
         alertDialog.show();
     }
-
-    private void showColorPickerDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Выберите цвет");
-
-        // Создаем слушатель для выбора цвета
-        DialogInterface.OnClickListener colorPickerListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int color) {
-                // Обработка выбранного цвета
-                color = labelColor;
-                // Можно также обновить внешний вид кнопки выбора цвета
-                colorPickerButton.setBackgroundColor(color);
-            }
-        };
-
-        // Устанавливаем слушатель для диалогового окна выбора цвета
-        builder.setPositiveButton("Выбрать", colorPickerListener);
-        builder.setNegativeButton("Отмена", null);
-
-        // Создаем диалоговое окно выбора цвета
-        AlertDialog colorPickerDialog = builder.create();
-
-        // Отображаем диалоговое окно
-        colorPickerDialog.show();
-    }
-
     private String generateSuperSecurePassword() {
         int length = 16; // Длина пароля
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
