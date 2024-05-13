@@ -9,7 +9,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
-    tools:context=".PinCodeActivity">
+    tools:context=".activity.PinCodeActivity">
 
 
     <ImageView
@@ -50,15 +50,12 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/button_border_gone"
         android:fontFamily="sans-serif"
-
-        android:text="ВОЙТИ"
         android:textColor="@color/берюзовый"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.264"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.811" />
+        app:layout_constraintVertical_bias="0.809" />
 
     <ImageView
         android:id="@+id/fingerImageView"
@@ -68,10 +65,10 @@
         android:src="@drawable/finger_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.811" />
+        app:layout_constraintVertical_bias="0.808" />
 
     <TextView
         android:id="@+id/titleTextView"

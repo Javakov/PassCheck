@@ -1,12 +1,16 @@
-package com.example.meetupsync;
+package org.fubar.passholder.database;
+
+import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Base64;
+import android.util.Log;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
@@ -14,7 +18,6 @@ public class EncryptionHelper {
     private static final String PREF_NAME = "encryption_prefs";
     private static final String KEY_KEY = "encryption_key";
     private static final String IV_KEY = "encryption_iv";
-
     private static String KEY;
     private static String IV;
 
@@ -59,7 +62,7 @@ public class EncryptionHelper {
             byte[] encryptedBytes = cipher.doFinal(input.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeToString(encryptedBytes, Base64.DEFAULT);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "onCreate: " + e.getMessage());
         }
         return null;
     }
@@ -74,7 +77,7 @@ public class EncryptionHelper {
             byte[] decryptedBytes = cipher.doFinal(Base64.decode(input, Base64.DEFAULT));
             return new String(decryptedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d(TAG, "onCreate: " + e.getMessage());
         }
         return null;
     }
