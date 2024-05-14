@@ -1,10 +1,10 @@
-<h3>Описание инструмента</h3>
-<p>Этот инструмент - хранилище паролей для нужного вам сервиса с их рандомной генерацией</p>
+<h3>Tool Description</h3>
+<p>This tool serves as a password storage for your chosen service, including random password generation.</p>
 
-<h3>Функционал</h3>
+<h3>Functionality</h3>
 <ul>
-<li>Добавление сервиса с генерацией для него пароля</li>
-<li>Система аутентификация для безопасного хранения паролей</li>
-<li>Логика открытия официальной страницы сервиса по названию, которое вписал пользователь</li>
-<li>Добавление метки для карточки пароля + сортировка по меткам</li>
+<li>Add a service with password generation for it</li>
+<li>Authentication system for secure password storage</li>
+<li>Logic to open the official service page based on the name entered by the user</li>
+<li>Add a label to the password card + sort by labels</li>
 </ul>
