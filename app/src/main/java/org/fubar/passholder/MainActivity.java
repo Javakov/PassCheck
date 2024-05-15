@@ -1,8 +1,13 @@
 package org.fubar.passholder;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.fubar.passholder.activity.AddPasswordActivity;
 import org.fubar.passholder.activity.PasswordDetailsActivity;
+import org.fubar.passholder.activity.PinCodeActivity;
 import org.fubar.passholder.database.DatabaseHelper;
 import org.fubar.passholder.dto.Password;
 
@@ -29,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     private String selectedLabel;
     private static final int REQUEST_CODE_ADD_PASSWORD = 1;
     private static final int REQUEST_CODE_DELETE_PASSWORD = 2;
+    public static final long DISCONNECT_TIMEOUT = 300000;
+    private CountDownTimer disconnectTimer;
+    private boolean isTimerRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,7 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
     // метод для отображения всех карточек на экране
     private void showPasswords() {
-        List<Password> passwordList = dbHelp.getAllPasswords();
+        dbHelp.getAllPasswords();
+        List<Password> passwordList;
 
         if (selectedLabel != null) {
             passwordList = dbHelp.getPasswordsByLabel(selectedLabel);
@@ -201,5 +211,74 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_CODE_DELETE_PASSWORD);
         });
         passwordsLayout.addView(cardView);
+    }
+
+    void logout() {
+        Intent intent = new Intent(this, PinCodeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    public void startLogoutTimer() {
+        if (!isTimerRunning) {
+            disconnectTimer = new CountDownTimer(DISCONNECT_TIMEOUT, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.d("DisconnectTimer Main", "Disconnect timer running: " + millisUntilFinished / 1000 + " seconds remaining");
+                }
+
+                @Override
+                public void onFinish() {
+                    logout();
+                }
+            }.start();
+            isTimerRunning = true;
+        }
+    }
+
+    public void resetLogoutTimer() {
+        if (isTimerRunning) {
+            disconnectTimer.cancel();
+            isTimerRunning = false;
+        }
+        startLogoutTimer();
+    }
+
+    @Override
+    public void onUserInteraction() {
+        resetLogoutTimer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        resetLogoutTimer();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isTimerRunning) {
+            disconnectTimer.cancel();
+            isTimerRunning = false;
+            resetLogoutTimer();
+        }
+        if (!isAppInForeground()) {
+            finish();
+        }
+    }
+
+    private boolean isAppInForeground() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTasks = activityManager.getRunningTasks(1);
+
+        if (!runningTasks.isEmpty()) {
+            ComponentName topActivity = runningTasks.get(0).topActivity;
+            assert topActivity != null;
+            return topActivity.getPackageName().equals(getPackageName());
+        }
+
+        return false;
     }
 }

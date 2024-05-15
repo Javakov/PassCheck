@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import org.fubar.passholder.R;
 import org.fubar.passholder.database.DatabaseHelper;
 import org.fubar.passholder.dto.Password;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,8 @@ public class AddPasswordActivity extends AppCompatActivity {
     private EditText labelNameEditText;
     private String label;
     private DatabaseHelper dbHelp;
+    private static final int PASSWORD_LENGTH = 16;
+    private static final String PASSWORD_CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,22 +133,18 @@ public class AddPasswordActivity extends AppCompatActivity {
             labelSet.add(password.getLabel());
         }
 
-        // Создаем адаптер для списка меток
         ArrayAdapter<String> labelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>(labelSet));
         labelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return labelAdapter;
     }
 
     private String generateSuperSecurePassword() {
-        int length = 16; // Длина пароля
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=";
-
         StringBuilder password = new StringBuilder();
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
 
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            char character = characters.charAt(index);
+        for (int i = 0; i < PASSWORD_LENGTH; i++) {
+            int index = random.nextInt(PASSWORD_CHARACTERS.length());
+            char character = PASSWORD_CHARACTERS.charAt(index);
             password.append(character);
         }
         return password.toString();

@@ -1,11 +1,13 @@
 package org.fubar.passholder.activity;
 
 import static android.content.ContentValues.TAG;
+import static android.graphics.Color.GREEN;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -42,12 +44,13 @@ import java.util.concurrent.Executors;
 public class PasswordDetailsActivity extends AppCompatActivity {
     private TextView serviceTextView;
     private ProgressBar loadingProgressBar;
+    private boolean isLoginClicked = false;
+    private boolean isPasswordClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_password_details);
-
 
         serviceTextView = findViewById(R.id.serviceTextView);
         TextView loginTextView = findViewById(R.id.loginTextView);
@@ -67,10 +70,33 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         String label = getIntent().getStringExtra("label");
 
         serviceTextView.setText("https://" + service);
-        loginTextView.setText(login);
-        passwordTextView.setText(password);
+        serviceTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_link_24, 0, 0, 0);
+
         commentTextView.setText(comment);
+        commentTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_comment_24, 0, 0, 0);
+
         labelTextView.setText(label);
+        labelTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_label_24, 0, 0, 0);
+
+        loginTextView.setText("*******");
+        loginTextView.setTextColor(GREEN);
+        loginTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_login_24, 0, 0, 0);
+
+        passwordTextView.setText("*******");
+        passwordTextView.setTextColor(GREEN);
+        passwordTextView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_password_24, 0, 0, 0);
+
+        loginTextView.setOnClickListener(v -> {
+            isLoginClicked = !isLoginClicked;
+            simpleAnimateClick(loginTextView);
+            loginTextView.setText(isLoginClicked ? login : "*******");
+        });
+
+        passwordTextView.setOnClickListener(v -> {
+            isPasswordClicked = !isPasswordClicked;
+            simpleAnimateClick(passwordTextView);
+            passwordTextView.setText(isPasswordClicked ? password : "*******");
+        });
 
         serviceTextView.setTypeface(null, Typeface.ITALIC);
         serviceTextView.setPaintFlags(serviceTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -134,7 +160,6 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         });
 
         deleteButton.setOnClickListener(v -> {
-            // Устанавливаем результат RESULT_OK и передаем ID удаляемого пароля
             Intent resultIntent = new Intent();
             resultIntent.putExtra("id", id);
             setResult(RESULT_OK, resultIntent);
@@ -181,5 +206,14 @@ public class PasswordDetailsActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             loadingProgressBar.setVisibility(View.GONE); // Скрыть ProgressBar после задержки
         }, 5000); // Задержка в миллисекундах
+    }
+
+    private void simpleAnimateClick(View view) {
+        Animation animation = new ScaleAnimation(1.0f, 0.9f, 1.0f, 0.9f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setDuration(100);
+        animation.setRepeatCount(1);
+        animation.setRepeatMode(Animation.REVERSE);
+        view.startAnimation(animation);
     }
 }
